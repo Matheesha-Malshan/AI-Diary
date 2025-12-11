@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: main-backend
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/diary
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  liquibase:
+    enabled: true
+    drop-first: false
+    change-log: classpath:db/changelog/db.changelog-master.xml
