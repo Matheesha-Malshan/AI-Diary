@@ -2,6 +2,12 @@ spring:
   application:
     name: main-backend
 
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: diaryContent
+
   datasource:
     url: jdbc:mysql://localhost:3306/diary
     username: root
@@ -16,3 +22,12 @@ spring:
     enabled: true
     drop-first: false
     change-log: classpath:db/changelog/db.changelog-master.xml
+
+
+mlService:
+  api:
+    key:
+    url: https://api.groq.com/openai/v1/chat/completions
+    eUrl: http://localhost:11434
+    qUrl: localhost
+    qPort: 6334

@@ -32,7 +32,7 @@ public class CacheValidator extends ValidationChain{
         String[] arrayText=object.getPromt().split("[.]");
 
         for(String iText:arrayText){
-            String hash= getHashCodeOfQuery(iText).concat(":"+object.getUserId());
+            String hash= getHashCodeOfQuery(iText).concat(":"+object.getUser_id());
 
             if (cache.getCache().getIfPresent(hash)!=null){
                 textValidatedDto.setPresentError(true);

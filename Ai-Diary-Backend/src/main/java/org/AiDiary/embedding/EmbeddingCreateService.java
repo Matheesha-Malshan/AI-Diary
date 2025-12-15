@@ -1,7 +1,9 @@
 package org.AiDiary.embedding;
 
+import reactor.core.publisher.Mono;
+
 import java.util.List;
 
 public interface EmbeddingCreateService {
-    List<float[]> createEmbeddings(String query);
+    float[] createEmbeddings(String query);
 }
