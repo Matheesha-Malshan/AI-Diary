@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Date;
-import java.util.Optional;
+import java.time.LocalDate;
 
 
 @Entity
@@ -16,14 +16,14 @@ public class UserChatEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 
     @Column(name = "createDate")
-    private Date createDate;
+    private LocalDate createDate;
 
     @Column(name = "sentimentScore")
     private double sentimentScore;

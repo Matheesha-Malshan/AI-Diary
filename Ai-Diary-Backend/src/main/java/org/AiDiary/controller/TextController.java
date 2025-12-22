@@ -20,7 +20,7 @@ public class TextController {
     }
 
     @GetMapping("/find-by-text/{userId}/{userQuery}")
-    public String findText(@PathVariable int userId,String userQuery){
+    public String findText(@PathVariable int userId,@PathVariable String userQuery){
         return textService.searchByText(userId,userQuery);
     }
 

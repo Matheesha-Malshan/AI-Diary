@@ -3,13 +3,14 @@ package org.AiDiary.dto.request;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 public class EmbeddingSavingDto {
+
     private int userId;
-    private List<float[]> embedding=new ArrayList<>();
-    private List<String> chunk=new ArrayList<>();
+    private float[] embedding=new float[768];
+    private String chunk;
+    private LocalDate createDate;
 }

@@ -4,11 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 public class TextRequestDto {
-    private int user_id;
+    private Integer user_id;
     private String promt;
-    private Date createDate;
+    private LocalDate createDate;
 }

@@ -5,20 +5,17 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
+
 
 @Getter
 @Setter
-@Document(collation = "userContent")
+@Document(collection = "userContent")
 public class ContentEntity {
     @Id
-    private int userId;
-    private Date createDate;
+    private String id;
+    private Integer userId;
+    private LocalDate createDate;
     private String userPrompt;
-    private List<String> places;
-    private List<String> people;
-    private List<String> keyWord;
-
 
 }

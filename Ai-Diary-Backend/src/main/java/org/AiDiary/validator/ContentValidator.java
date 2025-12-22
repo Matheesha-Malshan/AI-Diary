@@ -36,7 +36,7 @@ public class ContentValidator extends ValidationChain{
         }
         int textLength=text.length();
 
-        if (textLength>150){
+        if (textLength>1000){
             validatedDto.setPresentError(true);
             validatedDto.setErrorType("your content is more than expected");
             return;
@@ -101,23 +101,11 @@ public class ContentValidator extends ValidationChain{
    public void detectLanguage(TextValidatedDto validatedDto){
        String text = validatedDto.getUserQuery();
 
+       boolean isEnglishParagraph =
+               text.matches("[A-Za-z0-9\\s\\p{IsPunctuation}]+");
 
-       boolean hasOtherCharacters = text.codePoints()
-                   .anyMatch(cp -> {
-                   boolean isWhitespace = Character.isWhitespace(cp);
-                   boolean isPunctuation = Character.getType(cp) == Character.OTHER_PUNCTUATION;
-                   boolean isEnglishLetter =
-                           (cp >= 'a' && cp <= 'z') ||
-                                   (cp >= 'A' && cp <= 'Z');
 
-                   boolean isNumber = Character.isDigit(cp);
-
-                   boolean isEmoji = EmojiManager.isEmoji(String.valueOf(cp));
-
-                   return !(isEnglishLetter || isNumber || isEmoji|| isWhitespace || isPunctuation);
-               });
-
-       if (hasOtherCharacters){
+       if (!isEnglishParagraph){
            validatedDto.setPresentError(true);
            validatedDto.setErrorType("your content has invalid characters. you can add" +
                    "English letters , numbers and Emojis only");
