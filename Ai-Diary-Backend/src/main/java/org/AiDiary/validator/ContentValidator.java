@@ -1,6 +1,5 @@
 package org.AiDiary.validator;
 
-import net.fellbaum.jemoji.EmojiManager;
 import org.AiDiary.dto.request.TextRequestDto;
 import org.AiDiary.dto.response.TextValidatedDto;
 import org.springframework.stereotype.Component;

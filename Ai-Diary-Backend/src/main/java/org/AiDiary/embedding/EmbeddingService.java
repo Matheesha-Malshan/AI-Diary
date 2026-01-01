@@ -7,6 +7,6 @@ import org.AiDiary.dto.response.VectorSearchDto;
 import java.util.List;
 
 public interface EmbeddingService {
-    void saveEmbedding(EmbeddingSavingDto dto);
-    VectorSearchDto searchEmbeddings(float[] queryEmbedding, int userId, float threshold);
+    void saveEmbedding(EmbeddingSavingDto dto,String collection);
+    VectorSearchDto searchEmbeddings(float[] queryEmbedding, int userId, float threshold,String collection);
 }

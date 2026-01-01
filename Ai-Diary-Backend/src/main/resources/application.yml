@@ -28,6 +28,7 @@ mlService:
   api:
     key:
     url: https://api.groq.com/openai/v1/chat/completions
+    urlV: https://api.groq.com/openai/v1/audio/transcriptions
     eUrl: http://localhost:11434
     qUrl: localhost
     qPort: 6334

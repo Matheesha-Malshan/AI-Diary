@@ -28,5 +28,10 @@ public class RestTemplateConfig {
         return new RestTemplate();
     }
 
+    @Bean
+    public RestTemplate voiceTemplate(){
+        return new RestTemplate();
+    }
+
 
 }

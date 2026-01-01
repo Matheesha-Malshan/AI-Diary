@@ -12,6 +12,7 @@ import java.util.List;
 public class VectorSearchDto {
 
     private Integer userId;
+    private List<Integer> entryId;
     private List<String> chunkList;
     private List<LocalDate> dateList;
 

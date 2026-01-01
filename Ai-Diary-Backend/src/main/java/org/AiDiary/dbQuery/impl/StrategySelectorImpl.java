@@ -25,7 +25,6 @@ public class StrategySelectorImpl implements StrategySelector {
             }
         }
     }
-
     @Override
     public DbStrategy selectStrategy(Query query) {
         return strategyMap.get(query);

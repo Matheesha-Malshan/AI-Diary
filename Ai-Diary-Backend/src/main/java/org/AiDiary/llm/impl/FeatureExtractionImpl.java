@@ -1,6 +1,7 @@
 package org.AiDiary.llm.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.RequiredArgsConstructor;
 import org.AiDiary.llm.FeatureExtraction;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +33,7 @@ public class FeatureExtractionImpl implements FeatureExtraction {
                  - Happy: 0.5
                  - Intermediate: 0.3
                  - Bad: 0.2
+                 - So Bad:0.1
                  Use your judgment for other scores and assign a single sentiment_score.
             
               2. Features:

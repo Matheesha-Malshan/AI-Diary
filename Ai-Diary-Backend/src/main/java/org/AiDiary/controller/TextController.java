@@ -2,6 +2,7 @@ package org.AiDiary.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.AiDiary.dto.request.TextRequestDto;
+import org.AiDiary.dto.response.IntentResponseDto;
 import org.AiDiary.dto.response.TextResponseDto;
 import org.AiDiary.service.TextService;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/text")
 @RequiredArgsConstructor
+@CrossOrigin
 public class TextController {
 
     private final TextService textService;
@@ -20,7 +22,7 @@ public class TextController {
     }
 
     @GetMapping("/find-by-text/{userId}/{userQuery}")
-    public String findText(@PathVariable int userId,@PathVariable String userQuery){
+    public IntentResponseDto findText(@PathVariable int userId, @PathVariable String userQuery){
         return textService.searchByText(userId,userQuery);
     }
 

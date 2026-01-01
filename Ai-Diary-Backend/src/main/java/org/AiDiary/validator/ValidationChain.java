@@ -8,6 +8,7 @@ public abstract class ValidationChain {
     public ValidationChain nextValidator;
 
     public TextValidatedDto handleValidation(TextRequestDto hadler){
+
         TextValidatedDto validity=isValid(hadler);
 
         if (!validity.isPresentError() && nextValidator!=null){

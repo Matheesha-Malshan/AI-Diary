@@ -1,21 +1,25 @@
 package org.AiDiary.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.AiDiary.dbQuery.DbStrategy;
+import org.AiDiary.dbQuery.StrategySelector;
 import org.AiDiary.dto.request.EmbeddingSavingDto;
 import org.AiDiary.dto.request.TextRequestDto;
+import org.AiDiary.dto.response.IntentResponseDto;
 import org.AiDiary.dto.response.TextResponseDto;
 import org.AiDiary.dto.response.TextValidatedDto;
-import org.AiDiary.dto.response.VectorSearchDto;
 import org.AiDiary.embedding.EmbeddingCreateService;
 import org.AiDiary.embedding.EmbeddingService;
+import org.AiDiary.enums.Query;
 import org.AiDiary.llm.FeatureExtraction;
 import org.AiDiary.llm.QuerySelector;
-import org.AiDiary.model.ContentEntity;
-import org.AiDiary.model.UserChatEntity;
-import org.AiDiary.model.UserEntity;
+import org.AiDiary.entity.ContentEntity;
+import org.AiDiary.entity.UserChatEntity;
+import org.AiDiary.entity.UserEntity;
 import org.AiDiary.repository.ContentRepository;
 import org.AiDiary.repository.UserChatRepository;
 import org.AiDiary.repository.UserRepository;
@@ -25,7 +29,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import java.time.LocalTime;
+import java.time.ZoneId;
 
 
 @Slf4j
@@ -43,6 +48,7 @@ public class TextServiceImpl implements TextService {
     private final UserRepository userRepository;
     private final UserChatRepository userChatRepository;
     private final QuerySelector querySelector;
+    private final StrategySelector strategySelector;
 
     @Transactional
     public TextResponseDto createText(TextRequestDto textRequestDto){
@@ -80,7 +86,8 @@ public class TextServiceImpl implements TextService {
 
                 content.setId(userChats.getId().toString());
                 content.setUserId(textRequestDto.getUser_id());
-                content.setCreateDate(textRequestDto.getCreateDate());
+                content.setCreateDate(textRequestDto.getCreateDate()
+                        .atTime(LocalTime.NOON).atZone(ZoneId.systemDefault()).toInstant());
                 content.setUserPrompt(chain.getProccesedQuery());
 
                 ContentEntity contents= contentRepository.save(content);//save in mongo db
@@ -94,8 +101,9 @@ public class TextServiceImpl implements TextService {
                     embeddingSavingDto.setUserId(textRequestDto.getUser_id());
                     embeddingSavingDto.setEmbedding(embeddings);
                     embeddingSavingDto.setChunk(chain.getProccesedQuery());
+                    embeddingSavingDto.setEntryId(userChats.getId());
 
-                    embeddingService.saveEmbedding(embeddingSavingDto);
+                    embeddingService.saveEmbedding(embeddingSavingDto,"Ai-diary");
 
                 } catch (Exception e) {
 
@@ -114,13 +122,34 @@ public class TextServiceImpl implements TextService {
 
     }
 
-    public String searchByText(int userId,String userQuery){
+    public IntentResponseDto searchByText(int userId, String userQuery) {
 
-        float[] arr=embeddingCreateService.createEmbeddings(userQuery);
+        try {
+            String modelResponse = querySelector.selectQueryType(userQuery, 1);
+            JsonNode jsonText = objectMapper.readTree(modelResponse);
 
-        VectorSearchDto strings=embeddingService.searchEmbeddings(arr,userId,0.62f);
-        System.out.println(strings.getChunkList());
-        System.out.println(strings.getDateList());
-        return null;
+            String queryType = jsonText.findValue("queryType").asText();
+
+            System.out.println(queryType);
+            if (queryType.equals(Query.Sql.name())) {
+
+                DbStrategy strategy = strategySelector.selectStrategy(Query.Sql);
+                return strategy.processQuery(jsonText, userId, userQuery);
+            }
+            if (queryType.equals(Query.MongoDb.name())){
+                DbStrategy strategy = strategySelector.selectStrategy(Query.MongoDb);
+                return strategy.processQuery(jsonText, userId, userQuery);
+            }
+            if (queryType.equals(Query.VectorDb.name())){
+                DbStrategy strategy = strategySelector.selectStrategy(Query.VectorDb);
+                return strategy.processQuery(jsonText, userId, userQuery);
+            }
+            return new IntentResponseDto();
+
+        } catch (JsonProcessingException | RuntimeException e) {
+            throw new RuntimeException(e);
+
+        }
     }
+
 }

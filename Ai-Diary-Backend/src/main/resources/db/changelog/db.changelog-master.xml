@@ -9,7 +9,6 @@
     <include file="db/script/user_changelog.sql"/>
     <include file="db/script/userChat_changelog.sql"/>
     <include file="db/script/userVoice_changelog.sql"/>
-
-
+    <include file="db/script/userImage_Changelog.sql"/>
 
 </databaseChangeLog>

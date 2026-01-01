@@ -1,5 +1,6 @@
 package org.AiDiary.embedding.impl;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import io.qdrant.client.QdrantClient;
 import io.qdrant.client.grpc.Common;
 import io.qdrant.client.grpc.JsonWithInt.Value;
@@ -19,10 +20,9 @@ import java.util.concurrent.ExecutionException;
 public class EmbeddingServiceImpl implements EmbeddingService {
 
     private final QdrantClient qdrantClient;
-    private static final String COLLECTION_NAME = "Ai-diary";
 
     @Override
-    public void saveEmbedding(EmbeddingSavingDto dto) {
+    public void saveEmbedding(EmbeddingSavingDto dto,String collection) {
 
 
         if (dto.getEmbedding() == null || dto.getEmbedding().length != 768) {
@@ -40,14 +40,19 @@ public class EmbeddingServiceImpl implements EmbeddingService {
         Points.PointStruct point = toPoint(dto);
 
         Points.UpsertPoints request = Points.UpsertPoints.newBuilder()
-                .setCollectionName(COLLECTION_NAME)
+                .setCollectionName(collection)
                 .addPoints(point)
                 .build();
+        try {
+            ListenableFuture<Points.UpdateResult>future=qdrantClient.upsertAsync(request);
+            future.get();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
 
-        qdrantClient.upsertAsync(request);
-
-
-
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+        }
 
 
     }
@@ -88,11 +93,16 @@ public class EmbeddingServiceImpl implements EmbeddingService {
                                 .setStringValue(dto.getCreateDate().toString())
                                 .build()
                 )
+                .putPayload("entryId",
+                        Value.newBuilder()
+                                .setStringValue(dto.getEntryId().toString())
+                                .build()
+                )
                 .build();
     }
 
     @Override
-    public VectorSearchDto searchEmbeddings(float[] queryEmbedding, int userId, float threshold) {
+    public VectorSearchDto searchEmbeddings(float[] queryEmbedding, int userId, float threshold,String collection) {
 
         try {
             List<Float> vector = new ArrayList<>(queryEmbedding.length);
@@ -120,7 +130,7 @@ public class EmbeddingServiceImpl implements EmbeddingService {
 
             Points.SearchPoints searchRequest =
                     Points.SearchPoints.newBuilder()
-                            .setCollectionName("Ai-diary")
+                            .setCollectionName(collection)
                             .addAllVector(vector)
                             .setScoreThreshold(threshold)   // similarity threshold
                             .setLimit(50)                   // safety cap
@@ -138,6 +148,7 @@ public class EmbeddingServiceImpl implements EmbeddingService {
 
             List<String> chunkList = new ArrayList<>();
             List<LocalDate> dateList = new ArrayList<>();
+            List<Integer> entryList=new ArrayList<>();
 
             for (Points.ScoredPoint point : results) {
 
@@ -157,12 +168,20 @@ public class EmbeddingServiceImpl implements EmbeddingService {
                 } else {
                     dateList.add(null);
                 }
+                if (payload.containsKey("entryId")) {
+                    Integer entryId = Integer.valueOf(payload.get("entryId").getStringValue());
+                    entryList.add(entryId);
+
+                } else {
+                    entryList.add(null);
+                }
             }
 
             VectorSearchDto response = new VectorSearchDto();
             response.setUserId(userId);
             response.setChunkList(chunkList);
             response.setDateList(dateList);
+            response.setEntryId(entryList);
 
             return response;
 

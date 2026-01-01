@@ -2,7 +2,7 @@ package org.AiDiary.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.AiDiary.dto.request.UserRequestDto;
-import org.AiDiary.model.UserEntity;
+import org.AiDiary.entity.UserEntity;
 import org.AiDiary.repository.UserRepository;
 import org.AiDiary.service.UserService;
 import org.modelmapper.ModelMapper;

@@ -1,4 +1,4 @@
-package org.AiDiary.model;
+package org.AiDiary.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "user_Voice")
+@Table(name = "user_voice")
 public class VoiceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

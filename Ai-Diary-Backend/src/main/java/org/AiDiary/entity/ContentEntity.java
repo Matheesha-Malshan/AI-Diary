@@ -1,11 +1,12 @@
-package org.AiDiary.model;
+package org.AiDiary.entity;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
+import java.time.Instant;
+
 
 
 @Getter
@@ -15,7 +16,7 @@ public class ContentEntity {
     @Id
     private String id;
     private Integer userId;
-    private LocalDate createDate;
+    private Instant createDate;
     private String userPrompt;
 
 }

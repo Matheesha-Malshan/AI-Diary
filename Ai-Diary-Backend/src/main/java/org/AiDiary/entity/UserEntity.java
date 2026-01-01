@@ -1,4 +1,4 @@
-package org.AiDiary.model;
+package org.AiDiary.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,11 +32,18 @@ public class UserEntity {
     @OneToMany(mappedBy = "userVoice",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<VoiceEntity> userVoice=new ArrayList<>();
 
+    @OneToMany(mappedBy = "userImageEntity",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ImageEntity> imageEntities=new ArrayList<>();
+
     public void addChat(UserChatEntity userChat){
         userChatEntities.add(userChat);
 
     }
     public void addVoice(VoiceEntity voice){
         userVoice.add(voice);
+    }
+
+    public void addImages(ImageEntity image){
+        imageEntities.add(image);
     }
 }

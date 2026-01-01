@@ -13,4 +13,5 @@ public class EmbeddingSavingDto {
     private float[] embedding=new float[768];
     private String chunk;
     private LocalDate createDate;
+    private Integer entryId;
 }

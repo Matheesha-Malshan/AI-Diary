@@ -10,6 +10,7 @@ import java.util.Date;
 @Getter
 public class UserRequestDto {
 
+    private Integer userId;
     private String name;
     private String email;
     private LocalDate createdDate;
