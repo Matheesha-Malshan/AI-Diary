@@ -1,0 +1,232 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /voice/create:
+    post:
+      tags:
+      - voice-controller
+      operationId: createVoice
+      parameters:
+      - name: voiceRequestDto
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/VoiceRequestDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TextResponseDto"
+  /user/create:
+    post:
+      tags:
+      - user-controller
+      operationId: createuser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRequestDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserRequestDto"
+  /text/create:
+    post:
+      tags:
+      - text-controller
+      operationId: createText
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TextRequestDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TextResponseDto"
+  /image/create:
+    post:
+      tags:
+      - image-controller
+      operationId: createImage
+      parameters:
+      - name: imageRequestDto
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/ImageRequestDto"
+      responses:
+        "200":
+          description: OK
+  /text/find-by-text/{userId}/{userQuery}:
+    get:
+      tags:
+      - text-controller
+      operationId: findText
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: userQuery
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/IntentResponseDto"
+  /image/search-by-text/{userId}/{text}:
+    get:
+      tags:
+      - image-controller
+      operationId: searchImageByText
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: text
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ImageResponseDto"
+components:
+  schemas:
+    VoiceRequestDto:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int32
+        createDate:
+          type: string
+          format: date
+        duration:
+          type: number
+          format: double
+        fileSize:
+          type: number
+          format: double
+        format:
+          type: string
+        audio:
+          type: string
+          format: binary
+    TextResponseDto:
+      type: object
+      properties:
+        userQuery:
+          type: string
+        proccesedQuery:
+          type: string
+        errorType:
+          type: string
+    UserRequestDto:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        createdDate:
+          type: string
+          format: date
+    TextRequestDto:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          format: int32
+        promt:
+          type: string
+        createDate:
+          type: string
+          format: date
+    ImageRequestDto:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          format: int32
+        createDate:
+          type: string
+          format: date
+        image:
+          type: string
+          format: binary
+        description:
+          type: string
+        entryId:
+          type: integer
+          format: int32
+    IntentResponseDto:
+      type: object
+      properties:
+        dateList:
+          type: array
+          items:
+            type: string
+            format: date
+        contentList:
+          type: array
+          items:
+            type: string
+        sentimentList:
+          type: array
+          items:
+            type: number
+            format: double
+        error:
+          type: string
+        message:
+          type: string
+        presentError:
+          type: boolean
+    ImageResponseDto:
+      type: object
+      properties:
+        image:
+          type: array
+          items:
+            type: string
+        dateList:
+          type: array
+          items:
+            type: string
+            format: date
+        chunkList:
+          type: array
+          items:
+            type: string
